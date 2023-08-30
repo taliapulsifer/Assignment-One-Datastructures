@@ -1,3 +1,6 @@
+//Talia Pulsifer
+//08/29/23
+
 // FILE: IntSet.cpp - header file for IntSet class
 //       Implementation file for the IntStore class
 //       (See IntSet.h for documentation.)
@@ -121,25 +124,83 @@ void IntSet::DumpData(ostream& out) const
 
 IntSet IntSet::unionWith(const IntSet& otherIntSet) const
 {
+    //declare the new IntSet that will be returned
+    IntSet union;
+    //For every element in the first set, add all elements
+    for (int i = 0; i < used; i++)
+    {
+        union.add(data[i]);
+    }
+    //If used + other-union size != max 
+    if ((used + otherIntSet.subtract(union).size()) <= MAX_SIZE)
+    {
+        //Loop through the length of other and see if there are any elements
+        //not already in the list
+        for (int i = 0; i < otherIntSet.size(); i++)
+        {
+            //If union does not already contain the element in other
+            if (!union.contains(otherIntSet.data[i]))
+            {
+                //add that element into the union set
+                union.add(otherIntSet.data[i]);
+            }
+        }
+    }
    cout << "unionWith() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
+   return union; // dummy IntSet object returned
 }
 
+//other and intersect set are returned
+//intersect is the set made up of elements that are both in A and B
 IntSet IntSet::intersect(const IntSet& otherIntSet) const
 {
-   cout << "intersect() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
+    //Declare new Intersection Set
+    Intset intersection;
+    //For each element in other
+    for (int i = 0; i < used; i++)
+    {
+        //Get the element
+        int element = otherIntSet.data[i];
+        //If the set you are comparing other to contains the element
+        //add it to the intersection set
+        if (contains(element))
+        {
+            intersection.add(element);
+        }
+    }
+   return intersection, otherIntSet; // dummy IntSet object returned
 }
 
+//Return set A(the set the method is called on) subtract set B(The set that is put as a parameter)
 IntSet IntSet::subtract(const IntSet& otherIntSet) const
 {
-   cout << "subtract() is not implemented yet..." << endl;
-   return IntSet(); // dummy IntSet object returned
-}
+    IntSet subtracted;
+
+    //Add all elements contained in the set the method was called on 
+    //to the subtract set
+    for (int i = 0; i < used; i++)
+    {
+        subtracted.add(data[i]);
+    }
+    //For every element in the parameter IntSet, remove any elements that
+    //they have in common
+    for (int i = 0; i < otherIntSet.size(); i++)
+    {
+        if (subtracted.contains(otherIntSet.data[i]))
+            subtracted.remove(otherIntSet.data[i]);
+            -- subtracted.used;
+    }
+
+    return subtracted;
 
 void IntSet::reset()
 {
     //Delete all elements and set used to 0
+    for (int i = used; i >= 0; i--)
+    {
+        remove(data[i]);
+    }
+    //Set used back to 0
     used = 0;
 }
 
@@ -169,7 +230,7 @@ bool IntSet::add(int anInt)
             return true;
         }
     }
-
+    //If non of the above cases work, then return false
    return false;
 }
 
@@ -185,6 +246,7 @@ bool IntSet::remove(int anInt)
     if (contains(anInt))
     {
         //Remove the integer
+        return true;
     }
     //If the array does not contain the integer, return false 
     //(this is because nothing has changed)
@@ -194,6 +256,14 @@ bool IntSet::remove(int anInt)
 //Returns true if the sets are equal 
 bool equal(const IntSet& is1, const IntSet& is2)
 {
-   cout << "equal() is not implemented yet..." << endl;
-   return false; // dummy value returned
+    //If two sets are subsets of eachother, that means that they are 
+    //equal
+    //Check to see if they are subsets of eachother
+    if (is1.isSubsetOf(is2) && is2.iSubsetOf(is1))
+    {
+        //If they are, return true
+        return true;
+    }
+    //If they are not, return false
+    return false;
 }
